@@ -6,13 +6,15 @@ Este aplicativo web, es un mecanismo de presentación para el desarrollo de habi
 ## Tecnologia: ⌨️ 📡 📹 📸 💻
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=react,supabase,tailwind" />
+    <img src="https://skillicons.dev/icons?i=bun,react,supabase,tailwind,vite" />
   </a>
 </p>
 
+- Bun (Entorno de ejecución)
 - React (Frontend)
 - Superbase (Backend)
 - Tailwind (Estilos)
+- Vite (Herramienta de desarrollo intuitiva y versátil)
 
 ## Componentes del aplicativo
 Este sistema se compone de las siguientes funcionalidades:
