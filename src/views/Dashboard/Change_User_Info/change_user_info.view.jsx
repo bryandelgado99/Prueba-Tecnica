@@ -1,0 +1,80 @@
+import { useState } from "react";
+import { Drawer, Modal, Box, TextField, Button, InputAdornment } from "@mui/material";
+import { Email, Cake, FmdGood } from "@mui/icons-material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+const Change_User_Info = ({ open, onClose }) => {
+  const [name, setName] = useState("John");
+  const [lastName, setLastName] = useState("Doe");
+  const [address, setAddress] = useState("123 Main St, NY");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const email = "user@example.com"; // El email se mantiene fijo
+
+  const formFields = (
+    <Box className="flex flex-col gap-4">
+      <Box className="flex flex-col md:flex-row gap-4">
+        <TextField fullWidth label="Nombres" value={name} onChange={(e) => setName(e.target.value)} variant="outlined" />
+        <TextField fullWidth label="Apellidos" value={lastName} onChange={(e) => setLastName(e.target.value)} variant="outlined" />
+      </Box>
+
+      <TextField
+        fullWidth
+        label="Dirección"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        variant="outlined"
+        InputProps={{
+          startAdornment: <InputAdornment position="start"><FmdGood /></InputAdornment>,
+        }}
+      />
+
+      <TextField
+        fullWidth
+        label="Correo Electrónico"
+        value={email}
+        variant="outlined"
+        disabled // Hace que el campo no sea editable
+        InputProps={{
+          startAdornment: <InputAdornment position="start"><Email /></InputAdornment>,
+        }}
+      />
+
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          label="Fecha de Nacimiento"
+          value={selectedDate}
+          onChange={(newDate) => setSelectedDate(newDate)}
+          renderInput={(params) => <TextField {...params} fullWidth />}
+        />
+      </LocalizationProvider>
+
+      <Button variant="contained" color="primary" onClick={onClose}>
+        Guardar Cambios
+      </Button>
+    </Box>
+  );
+
+  return (
+    <>
+      {/* Panel lateral en escritorio */}
+      <Drawer anchor="right" open={open} onClose={onClose} className="hidden md:flex">
+        <Box className="w-96 p-6 bg-white h-full shadow-lg">
+          <h2 className="text-xl font-bold mb-4">Editar Información</h2>
+          {formFields}
+        </Box>
+      </Drawer>
+
+      {/* Modal Bottom Sheet en móvil */}
+      <Modal open={open} onClose={onClose} className="flex md:hidden items-end">
+        <Box className="w-full bg-white p-6 rounded-t-2xl shadow-lg">
+          <h2 className="text-xl font-bold mb-4">Editar Información</h2>
+          {formFields}
+        </Box>
+      </Modal>
+    </>
+  );
+};
+
+export default Change_User_Info;

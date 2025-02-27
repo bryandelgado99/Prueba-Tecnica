@@ -18,7 +18,7 @@ const Login = () => {
     <>
       <main className="bg-blue-400 w-screen h-dvh flex flex-col justify-center items-center relative">
     
-        <section className=" absolute w-full md:w-1/4 gap-8 flex flex-col bg-white p-12 rounded-3xl shadow-2xl">
+        <section className="absolute w-full md:w-1/4 gap-8 flex flex-col bg-white p-12 rounded-3xl shadow-2xl">
 
             <div className="flex flex-row justify-center items-center gap-6">
                 <img src={ReactLogo} width={80} alt="React Logo" />
@@ -55,13 +55,18 @@ const Login = () => {
 
             <div className="w-full flex justify-end">
                 <Button variant="text" size="small" className="text-blue-400">
-                He olvidado mi contraseña
+                    <Link to="/reset-password" className="text-sky-400 font-bold">
+                        He olvidado mi contraseña
+                    </Link>
                 </Button>
             </div>
 
-            <Button variant="contained" size="medium" className="w-full mt-4" disabled={loading}>
-                Iniciar Sesión
-            </Button>
+            <Link to="/dashboard">
+              <Button variant="contained" size="medium" className="w-full mt-4" disabled={loading}>
+                  Iniciar Sesión
+              </Button>
+            </Link>
+
             </form>
         
             <Box className="w-full justify-center items-center flex text-sm mt-8">

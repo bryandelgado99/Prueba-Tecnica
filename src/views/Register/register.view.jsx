@@ -5,7 +5,7 @@ import SuperbaseLogo from "../../assets/supabase.svg"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import { Box, InputAdornment } from "@mui/material"
-import {Email, Cake} from '@mui/icons-material'
+import {Email, Cake, FmdGood} from '@mui/icons-material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -16,7 +16,8 @@ const Register = () =>{
     const [password, setPassword] = React.useState('')
     const [name, setName] = React.useState('')
     const [lastName, setLastName] = React.useState('')
-    
+    const [address, setAddress] = React.useState('')
+
     const [error, setError] = React.useState('')
     
     const [selectedDate, setSelectedDate] = React.useState(null);
@@ -53,6 +54,19 @@ const Register = () =>{
                         type="text"
                     />
                 </Box>
+
+                <TextField
+                    fullWidth
+                    label="Dirección"
+                    variant="outlined"
+                    margin="normal"
+                    type="text"
+                    slotProps={{
+                        input: {
+                          startAdornment: <InputAdornment position="start"><FmdGood/></InputAdornment>,
+                        },
+                      }}
+                />
 
                 <TextField
                     fullWidth
