@@ -6,13 +6,14 @@ Este aplicativo web, es un mecanismo de presentación para el desarrollo de habi
 ## Tecnologia: ⌨️ 📡 📹 📸 💻
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=bun,react,supabase,tailwind,vite" />
+    <img src="https://skillicons.dev/icons?i=bun,postgresql,react,supabase,tailwind,vite" />
   </a>
 </p>
 
 - Bun (Entorno de ejecución)
 - React (Frontend)
-- Superbase (Backend)
+- Supabase (Backend)
+- PostgreSQL (Base de datos)
 - Tailwind (Estilos)
 - Vite (Herramienta de desarrollo intuitiva y versátil)
 
@@ -29,6 +30,11 @@ Este sistema se compone de las siguientes funcionalidades:
 ## Despliegue
 
 ## Capturas del aplicativo
+
+![](/images/image.png)
+<p align="center">Editor de tablas de Superbase con las tablas del proyecto</p> 
+
+
 
 ## Usuario por defecto
 Para probar el sistema, puede hacer uso del siguiente usuario:
