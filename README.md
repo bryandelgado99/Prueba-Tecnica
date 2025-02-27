@@ -34,7 +34,17 @@ Este sistema se compone de las siguientes funcionalidades:
 ![](/images/image.png)
 <p align="center">Editor de tablas de Superbase con las tablas del proyecto</p> 
 
+![](/images/login.png)
+<p align="center">Inicio de sesión</p> 
 
+![](/images/register.png)
+<p align="center">Registro</p> 
+
+![](/images/dashboard.png)
+<p align="center">Pantalla de inicio del sistema</p>
+
+![](/images/edit-info.png)
+<p align="center">Editor de información del usuario</p> 
 
 ## Usuario por defecto
 Para probar el sistema, puede hacer uso del siguiente usuario:

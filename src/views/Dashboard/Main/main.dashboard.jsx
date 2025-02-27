@@ -30,9 +30,11 @@ const Dashboard = () => {
                     <p className="text-white font-bold text-lg hidden md:flex">Bienvenido, user</p>
                     {/* Botón de cierre de sesioón A (visible en pantallas medianas y grandes) */}
                     <span className="hidden md:flex">
-                        <Button variant="contained" startIcon={<Logout />}>
-                            Cerrar Sesión
-                        </Button>
+                        <Link to="/">
+                            <Button variant="contained" startIcon={<Logout />}>
+                                Cerrar Sesión
+                            </Button>
+                        </Link>
                     </span>
 
                     {/* Botón de cierre de sesión B (visible solo en móviles) */}
