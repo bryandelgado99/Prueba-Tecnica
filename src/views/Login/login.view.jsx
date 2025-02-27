@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as React from "react";
 import ReactLogo from "../../assets/react_light.svg";
 import SuperbaseLogo from "../../assets/supabase.svg";
@@ -6,13 +6,41 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Box, InputAdornment} from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
+import { useAuth } from '../../context/auth.provider'
+import Swal from "sweetalert2";
 
 const Login = () => {
 
+    const navigate = useNavigate();
+    const {login} = useAuth();
+
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
-    const [error, setError] = React.useState('')
     const [loading, setLoading] = React.useState('')
+
+    // Función para manejo de inicio de sesión
+    const handleLogin = async (e) =>{
+
+      e.preventDefault();
+      setLoading(true);
+
+      try {
+        const response = await login(email, password);
+  
+        if (!response.success) {
+          Swal.fire("Error", response.message, "error");
+          return;
+        }
+  
+        // Si la cuenta está activada, redirigimos al dashboard
+        navigate("/dashboard");
+      } catch (error) {
+        Swal.fire("Error", error.message, "error");
+      } finally {
+        setLoading(false);
+      }
+
+    }
 
   return (
     <>
@@ -35,6 +63,8 @@ const Login = () => {
                 variant="outlined"
                 margin="normal"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 slotProps={{
                     input: {
                       startAdornment: <InputAdornment position="start"><Email/></InputAdornment>,
@@ -47,6 +77,8 @@ const Login = () => {
                 variant="outlined"
                 margin="normal"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 slotProps={{
                     input: {
                       startAdornment: <InputAdornment position="start"><Lock/></InputAdornment>,
@@ -61,11 +93,16 @@ const Login = () => {
                 </Button>
             </div>
 
-            <Link to="/dashboard">
-              <Button variant="contained" size="medium" className="w-full mt-4" disabled={loading}>
-                  Iniciar Sesión
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              size="medium"
+              className="w-full mt-4"
+              type="submit"
+              disabled={loading}
+              onClick={handleLogin}
+            >
+              {loading ? "Iniciando Sesión" : "Iniciar Sesión"}
+            </Button>
 
             </form>
         
