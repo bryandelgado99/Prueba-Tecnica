@@ -31,6 +31,9 @@ Este sistema se compone de las siguientes funcionalidades:
 
 ## Capturas del aplicativo
 
+![](/images/db.png)
+<p align="center">Esquema gráfico de la base de datos</p> 
+
 ![](/images/image.png)
 <p align="center">Editor de tablas de Superbase con las tablas del proyecto</p> 
 
@@ -48,5 +51,5 @@ Este sistema se compone de las siguientes funcionalidades:
 
 ## Usuario por defecto
 Para probar el sistema, puede hacer uso del siguiente usuario:
- - Correo electrónico:
- - Contraseña: 
+ - Correo electrónico: lopikil841@jomspar.com
+ - Contraseña: 123456
