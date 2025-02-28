@@ -27,7 +27,13 @@ Este sistema se compone de las siguientes funcionalidades:
 - Sprint 6: Formulario de actualización ed datos de usuario (Nombres, Apellidos, Dirección, Fecha de nacimiento).
 - Sprint 7: Definir usuario por defecto
 
-## Despliegue
+## Construcción desde el código
+1. Clonar el repositorio
+2. Instalar las dependencias con los comandos <code> npm install o bun install </code>
+3. Inicializar el servidor de desarrollo con <code> npm run dev o bun run dev </code>
+
+# Despliegue
+El enlace para el despliegue es el siguiente: [Prueba Técnica | Paul Dev](https://test-fullstack-pauldev.netlify.app/)
 
 ## Capturas del aplicativo
 
