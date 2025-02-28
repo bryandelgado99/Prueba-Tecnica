@@ -61,8 +61,56 @@ export const AuthProvider = ({ children }) => {
       return { success: false, message: error.message };
     }
   };
-  
 
+
+  /*Función para editar los datos del usuario */
+  const updateUserData = async (updatedFields) => {
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session || !session.user) {
+        throw new Error("Usuario no autenticado o sesión no disponible.");
+      }
+  
+      const user = session.user;
+      const { first_name, last_name, address, birth_date } = updatedFields;
+
+      // Validación de la fecha de nacimiento (no menor a 15 años y no posterior a la fecha actual)
+      if (birth_date) {
+        const birthDate = new Date(birth_date);
+        const currentDate = new Date();
+        const age = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+        const dayDiff = currentDate.getDate() - birthDate.getDate();
+
+        // Si la edad es menor a 15 años o la fecha de nacimiento es mayor a la fecha actual
+        if (age < 15 || (age === 15 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+          throw new Error("La fecha de nacimiento debe ser mayor a 15 años.");
+        }
+
+        if (birthDate > currentDate) {
+          throw new Error("La fecha de nacimiento no puede ser posterior a la fecha actual.");
+        }
+      }
+
+      // Realizar la actualización en la tabla "users"
+      const { data, error } = await supabase
+        .from("users")  // Asegúrate de que este es el nombre correcto de la tabla
+        .update(updatedFields)
+        .eq("id", user.id)  // Filtrar por el id del usuario autenticado
+        .select();
+  
+      if (error) {
+        throw error;
+      }
+  
+      return { success: true, message: "Datos actualizados correctamente", data };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+};
+
+  
   // **Iniciar sesión**
   const login = async (email, password) => {
     try {
@@ -184,10 +232,10 @@ const getLastLogin = async () => {
       });
 
       if (error) {
-        return { success: false, message: error.message };  // Si ocurre un error
+        return { success: false, message: error.message }; 
       }
 
-      return { success: true, message: "Correo de recuperación enviado." };  // Si todo va bien
+      return { success: true, message: "Correo de recuperación enviado." };
     } catch (error) {
       return { success: false, message: error.message };
     }
@@ -201,7 +249,7 @@ const getLastLogin = async () => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, resetPassword, changePassword, getUserData, getLastLogin}}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, resetPassword, changePassword, getUserData, getLastLogin, updateUserData}}>
       {children}
     </AuthContext.Provider>
   );

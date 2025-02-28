@@ -14,31 +14,40 @@ const Dashboard = () => {
     const [userData, setUserData] = useState(null);
     const [lastLogin, setLastLogin] = useState(null);
 
+    // Función para obtener los datos del usuario
+    const fetchUserData = async () => {
+        const response = await getUserData();
+        if (response.success) {
+            setUserData(response.data);
+        } else {
+            console.error(response.message);
+        }
+    };
+
+    // Función para obtener la última fecha de login
+    const fetchLastLogin = async () => {
+        const response = await getLastLogin();
+        if (response.success) {
+            setLastLogin(new Date(response.lastLogin).toLocaleString());
+        } else {
+            console.error(response.message);
+        }
+    };
+
     useEffect(() => {
-        const fetchUserData = async () => {
-            const response = await getUserData();
-            if (response.success) {
-                setUserData(response.data);
-            } else {
-                console.error(response.message);
-            }
-        };
-
-        const fetchLastLogin = async () => {
-            const response = await getLastLogin();
-            if (response.success) {
-                setLastLogin(new Date(response.lastLogin).toLocaleString());
-            } else {
-                console.error(response.message);
-            }
-        };
-
         fetchUserData();
         fetchLastLogin();
-    }, []); 
+    }, []); // Solo se ejecuta una vez cuando se carga el componente
     
+    // Función para manejar el logout
     const handleLogout = () => {
         logout();  // Cierra sesión y redirige a la ruta raíz
+    };
+
+    // Función que será llamada cuando se cierren los cambios en el modal
+    const handleCloseChange = () => {
+        setIsOpen(false);  // Cierra el modal
+        fetchUserData();  // Recarga los datos del usuario
     };
 
     return (
@@ -75,12 +84,13 @@ const Dashboard = () => {
 
                 {/* Contenido principal que ocupa el espacio restante */}
                 <main className="flex justify-center items-center flex-col gap-y-8 p-4">
-                <p className="text-xl font-bold">Información del Usuario</p>
-                <GridUserInfo/>
+                    <p className="text-xl font-bold">Información del Usuario</p>
+                    
+                    <GridUserInfo userData={userData} />
 
-                <Button variant="contained" startIcon={<Edit/>} onClick={() => setIsOpen(true)}>
-                    Editar Información
-                </Button>
+                    <Button variant="contained" startIcon={<Edit />} onClick={() => setIsOpen(true)}>
+                        Editar Información
+                    </Button>
                 </main>
 
                 {/* Footer fijo abajo */}
@@ -91,7 +101,10 @@ const Dashboard = () => {
             </div>
 
             {/* Panel lateral / Modal */}
-            <Change_User_Info open={isOpen} onClose={() => setIsOpen(false)} />
+            <Change_User_Info 
+                open={isOpen} 
+                onClose={handleCloseChange} 
+            />
         </>
     );
 };
