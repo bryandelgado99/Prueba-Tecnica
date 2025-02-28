@@ -3,14 +3,43 @@ import SuperbaseLogo from "../../../assets/supabase.svg";
 import { Button, IconButton } from "@mui/material";
 import { Logout, Edit } from "@mui/icons-material";
 import GridUserInfo from "../../../components/grid.user_info";
-import { Link } from "react-router-dom";
 import Change_User_Info from "../Change_User_Info/change_user_info.view";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../../context/auth.provider";
 
 const Dashboard = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    const { getUserData, getLastLogin, logout } = useAuth(); 
+    const [userData, setUserData] = useState(null);
+    const [lastLogin, setLastLogin] = useState(null);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const response = await getUserData();
+            if (response.success) {
+                setUserData(response.data);
+            } else {
+                console.error(response.message);
+            }
+        };
+
+        const fetchLastLogin = async () => {
+            const response = await getLastLogin();
+            if (response.success) {
+                setLastLogin(new Date(response.lastLogin).toLocaleString());
+            } else {
+                console.error(response.message);
+            }
+        };
+
+        fetchUserData();
+        fetchLastLogin();
+    }, []); 
+    
+    const handleLogout = () => {
+        logout();  // Cierra sesión y redirige a la ruta raíz
+    };
 
     return (
         <>
@@ -27,23 +56,19 @@ const Dashboard = () => {
 
                 {/* User info and Logout button */}
                 <div className="flex flex-row gap-x-10 justify-center items-center">
-                    <p className="text-white font-bold text-lg hidden md:flex">Bienvenido, user</p>
+                    <p className="text-white font-bold text-lg hidden md:flex">Bienvenido, {userData?.first_name || ""}</p>
                     {/* Botón de cierre de sesioón A (visible en pantallas medianas y grandes) */}
                     <span className="hidden md:flex">
-                        <Link to="/">
-                            <Button variant="contained" startIcon={<Logout />}>
+                            <Button variant="contained" startIcon={<Logout />} onClick={handleLogout}>
                                 Cerrar Sesión
                             </Button>
-                        </Link>
                     </span>
 
                     {/* Botón de cierre de sesión B (visible solo en móviles) */}
                     <span className="md:hidden bg-blue-500 w-auto h-auto rounded-xl">
-                        <Link to="/">
-                            <IconButton className="flex md:hidden">
+                            <IconButton className="flex md:hidden" onClick={handleLogout}>
                                 <Logout className="text-white"/>
                             </IconButton>
-                        </Link>
                     </span>
                 </div>
                 </nav>
@@ -59,9 +84,9 @@ const Dashboard = () => {
                 </main>
 
                 {/* Footer fijo abajo */}
-                <footer className="bg-blue-500 flex-col md:flex-row text-white p-4 flex items-center justify-center">
-                <span>Fecha y hora de último acceso:</span>
-                <span> dd/mm/yy HH:MM:SSS</span>
+                <footer className="bg-blue-500 flex-col md:flex-row text-white gap-x-8 p-4 flex items-center justify-center">
+                    <span>Fecha y hora de último acceso:</span>
+                    <span> {lastLogin || "No disponible"}</span>
                 </footer>
             </div>
 

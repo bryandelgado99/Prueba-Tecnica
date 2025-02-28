@@ -1,7 +1,5 @@
-import { v4 as uuidv4 } from 'uuid'; 
 import { createContext, useContext, useEffect, useState } from "react";
 import supabase from '../service/supabase.client'
-import { sendActivationEmail } from "../utils/emailSender.utils";
 
 const AuthContext = createContext();
 
@@ -68,29 +66,142 @@ export const AuthProvider = ({ children }) => {
   // **Iniciar sesión**
   const login = async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
-      if (error) {
-        if (error.message.includes('email not confirmed')) {
-          return { success: false, message: "Debes activar tu cuenta antes de iniciar sesión." };
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            if (error.message.includes('email not confirmed')) {
+                return { success: false, message: "Debes activar tu cuenta antes de iniciar sesión." };
+            }
+            throw error;  // Si hay otro tipo de error, lanzamos el error
         }
-        throw error;  // Si hay otro tipo de error, lanzamos el error
-      }
+
+        const userId = data.user.id; // Obtener ID del usuario
+        const loginTime = new Date().toISOString(); // Fecha y hora actual en formato ISO
+
+        // Eliminar el último registro de sesión del usuario (si existe)
+        await supabase
+            .from("sessions")
+            .delete()
+            .eq("user_id", userId);
+
+        // Insertar la nueva sesión
+        const { error: insertError } = await supabase.from("sessions").insert([
+            { user_id: userId, last_login: loginTime }
+        ]);
+
+        if (insertError) {
+            console.error("Error al registrar la sesión:", insertError.message);
+        }
+
+        return { success: true, message: "Inicio de sesión exitoso." };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
+
+const getLastLogin = async () => {
+    try {
+        // Obtener el usuario autenticado
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return { success: false, message: "No hay usuario autenticado." };
+        }
+
+        // Buscar la última sesión registrada en la tabla `sessions`
+        const { data, error } = await supabase
+            .from("sessions")
+            .select("last_login")
+            .eq("user_id", user.id)
+            .order("last_login", { ascending: false })
+            .limit(1)
+            .single();
+
+        if (error) {
+            return { success: false, message: "No se encontró la última sesión." };
+        }
+
+        return { success: true, lastLogin: data.last_login };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+
   
-      return { success: true, message: "Inicio de sesión exitoso." };
+  const changePassword = async (password, confirmPassword) => {
+    try {
+        // Verificamos que las contraseñas coincidan
+        if (password !== confirmPassword) {
+            return { success: false, message: "Las contraseñas no coinciden." };
+        }
+
+        // Supabase ya autenticó temporalmente al usuario, solo actualizamos la contraseña
+        const { error } = await supabase.auth.updateUser({ password });
+
+        if (error) {
+            return { success: false, message: error.message };
+        }
+
+        return { success: true, message: "Contraseña actualizada con éxito." };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+};
+    
+
+    const getUserData = async () => {
+        try {
+        if (!user) {
+            return { success: false, message: "No hay un usuario autenticado." };
+        }
+
+        const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return { success: true, data };
+        } catch (error) {
+        return { success: false, message: error.message };
+        }
+    };
+
+
+  const resetPassword = async (email) => {
+    try {
+      // Definimos la URL de redirección
+      const redirectUrl = 'http://localhost:5173/change-password';  // Redirige al componente de cambio de contraseña
+
+      // Llamar al método de Supabase para enviar el correo de recuperación
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,  // Aquí pasamos la URL de redirección
+      });
+
+      if (error) {
+        return { success: false, message: error.message };  // Si ocurre un error
+      }
+
+      return { success: true, message: "Correo de recuperación enviado." };  // Si todo va bien
     } catch (error) {
       return { success: false, message: error.message };
     }
-  };  
+};
 
   // **Cerrar sesión**
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    window.location.href = "/"  // Redirige a la ruta raíz
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, resetPassword, changePassword, getUserData, getLastLogin}}>
       {children}
     </AuthContext.Provider>
   );

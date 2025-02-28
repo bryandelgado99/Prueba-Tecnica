@@ -6,6 +6,7 @@ import Active_Account from "./views/Active_Account/active_account.view"
 import Dashboard from "./views/Dashboard/Main/main.dashboard"
 import Change_User_Info from "./views/Dashboard/Change_User_Info/change_user_info.view"
 import { AuthProvider } from "./context/auth.provider"
+import Change_Password from "./views/Change_Password/change_password.view"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/reset-password" element={<Reset_Password/>}/>
+        <Route path="/change-password" element={<Change_Password/>}/>
         <Route path="/activate-account" element={<Active_Account/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/edit-user-information" element={<Change_User_Info/>}/>
